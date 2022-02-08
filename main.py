@@ -9,12 +9,15 @@ def get_work_status(url, token):
         'Authorization': f'Token {token}'
     }
     params = {
-        'timestamp': 1644330692.0869882
+        'timestamp': 1555493856
     }
     while True:
-        response = requests.get(url, headers=headers, params=params)
-        response.raise_for_status()
-        logging.info(response.json())
+        try:
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            logging.info(response.json())
+        except requests.exceptions.ReadTimeout as error:
+            logging.critical(error)
 
 
 def main():
