@@ -40,6 +40,9 @@ def main():
                 work_status_link, devman_token, timestamp)
             if dvmn_response['status'] == 'timeout':
                 timestamp = dvmn_response['timestamp_to_request']
+            if dvmn_response['status'] == 'found':
+                lesson = dvmn_response['new_attempts'][0]['lesson_title']
+                bot.send_message(text=f'Преподаватель проверил работу - {lesson}', chat_id=chat_id)
 
         except requests.exceptions.ReadTimeout as error:
             logging.error(f' Ошибка таймаута - {error}')
