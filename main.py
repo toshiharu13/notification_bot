@@ -1,5 +1,5 @@
 import logging
-
+import telegram
 import requests
 from environs import Env
 
@@ -16,12 +16,23 @@ def get_work_status(url, token, timestamp):
 
 
 def main():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format='%(asctime)s; %(levelname)s; %(name)s; %(message)s',
+        filename='logs.lod',
+        filemode='w',
+    )
     env = Env()
     env.read_env()
 
     work_status_link = 'https://dvmn.org/api/long_polling/'
     devman_token = env.str('TOKEN')
     timestamp = None
+    bot_token = env.str('BOT_TOKEN')
+    chat_id = env.str('CHAT_ID')
+    bot = telegram.Bot(token=bot_token)
+    user_name = bot.get_updates()[0]['message']['chat']['first_name']
+    bot.send_message(text=f'Привет {user_name}!', chat_id=chat_id)
 
     while True:
         try:
@@ -38,10 +49,4 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s; %(levelname)s; %(name)s; %(message)s',
-            filename='logs.lod',
-            filemode='w',
-        )
     main()
