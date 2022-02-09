@@ -7,7 +7,6 @@ from environs import Env
 def get_work_status(url, token, timestamp):
     headers = {'Authorization': f'Token {token}'}
     params = {'timestamp': timestamp}
-    print(timestamp)
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     dvmn_response = response.json()
@@ -42,7 +41,19 @@ def main():
                 timestamp = dvmn_response['timestamp_to_request']
             if dvmn_response['status'] == 'found':
                 lesson = dvmn_response['new_attempts'][0]['lesson_title']
-                bot.send_message(text=f'Преподаватель проверил работу - {lesson}', chat_id=chat_id)
+                lesson_url = dvmn_response['new_attempts'][0]['lesson_url']
+                lesson_result = (
+                    'К сожалению, в работе есть ошибки'
+                    if dvmn_response['new_attempts'][0]['is_negative']
+                    else 'Преподаватель принял задачу'
+                )
+                bot.send_message(
+                    text=f'Преподаватель проверил работу - {lesson}, '
+                         f'{lesson_result}. Ссылка -  '
+                         f'{lesson_url}',
+                    chat_id=chat_id
+
+                )
 
         except requests.exceptions.ReadTimeout as error:
             logging.error(f' Ошибка таймаута - {error}')
