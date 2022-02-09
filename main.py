@@ -1,6 +1,7 @@
 import logging
-import telegram
+
 import requests
+import telegram
 from environs import Env
 
 
