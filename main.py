@@ -4,20 +4,15 @@ import requests
 from environs import Env
 
 
-def get_work_status(url, token):
-    headers = {
-        'Authorization': f'Token {token}'
-    }
-    params = {
-        'timestamp': 1555493856
-    }
-    while True:
-        try:
-            response = requests.get(url, headers=headers, params=params)
-            response.raise_for_status()
-            logging.info(response.json())
-        except requests.exceptions.ReadTimeout as error:
-            logging.critical(error)
+def get_work_status(url, token, timestamp):
+    headers = {'Authorization': f'Token {token}'}
+    params = {'timestamp': timestamp}
+    print(timestamp)
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    dvmn_response = response.json()
+    logging.info(dvmn_response)
+    return dvmn_response
 
 
 def main():
@@ -26,8 +21,20 @@ def main():
 
     work_status_link = 'https://dvmn.org/api/long_polling/'
     devman_token = env.str('TOKEN')
+    timestamp = None
 
-    get_work_status(work_status_link, devman_token)
+    while True:
+        try:
+            dvmn_response = get_work_status(
+                work_status_link, devman_token, timestamp)
+            if dvmn_response['status'] == 'timeout':
+                timestamp = dvmn_response['timestamp_to_request']
+
+        except requests.exceptions.ReadTimeout as error:
+            logging.error(f' Ошибка таймаута - {error}')
+
+        except requests.exceptions.ConnectionError as error:
+            logging.error(f' Ошибка соединения - {error}')
 
 
 if __name__ == "__main__":
