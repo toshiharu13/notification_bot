@@ -26,10 +26,10 @@ def main():
     env.read_env()
 
     work_status_link = 'https://dvmn.org/api/long_polling/'
-    devman_token = env.str('TOKEN')
+    devman_token = env.str('DVMN_TOKEN')
     timestamp = None
-    bot_token = env.str('BOT_TOKEN')
-    chat_id = env.str('CHAT_ID')
+    bot_token = env.str('TG_BOT_TOKEN')
+    chat_id = env.str('TG_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
     user_name = bot.get_updates()[0]['message']['chat']['first_name']
     bot.send_message(text=f'Привет {user_name}!', chat_id=chat_id)
