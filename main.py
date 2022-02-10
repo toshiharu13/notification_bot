@@ -1,4 +1,5 @@
 import logging
+import textwrap
 
 import requests
 import telegram
@@ -50,13 +51,11 @@ def main():
                     if lesson_checker['is_negative']
                     else 'Преподаватель принял задачу'
                 )
-                bot.send_message(
-                    text=f'Преподаватель проверил работу - {lesson}, '
-                         f'{lesson_result}. Ссылка -  '
-                         f'{lesson_url}',
-                    chat_id=chat_id
-
-                )
+                bot_text = textwrap.dedent(f'''\
+                Преподаватель проверил работу - {lesson}
+                {lesson_result}. Ссылка - 
+                {lesson_url}''')
+                bot.send_message(text=bot_text, chat_id=chat_id)
 
         except requests.exceptions.ReadTimeout as error:
             logging.error(f' Ошибка таймаута - {error}')
