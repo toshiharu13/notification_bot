@@ -33,8 +33,7 @@ def main():
     bot_token = env.str('TG_BOT_TOKEN')
     chat_id = env.str('TG_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
-    user_name = bot.get_updates()[0]['message']['chat']['first_name']
-    #print(bot.mess)
+    user_name = bot.get_chat_member(chat_id, chat_id).user['first_name']
     error_connect_count = 0
     sleep_time = 90
     errors_quantity = 5
