@@ -32,20 +32,22 @@ def main():
     chat_id = env.str('TG_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
     user_name = bot.get_updates()[0]['message']['chat']['first_name']
+    #print(bot.mess)
     bot.send_message(text=f'Привет {user_name}!', chat_id=chat_id)
 
     while True:
         try:
             dvmn_response = get_work_status(
                 work_status_link, devman_token, timestamp)
+            lesson_checker = dvmn_response['new_attempts'][0]
             if dvmn_response['status'] == 'timeout':
                 timestamp = dvmn_response['timestamp_to_request']
             if dvmn_response['status'] == 'found':
-                lesson = dvmn_response['new_attempts'][0]['lesson_title']
-                lesson_url = dvmn_response['new_attempts'][0]['lesson_url']
+                lesson = lesson_checker['lesson_title']
+                lesson_url = lesson_checker['lesson_url']
                 lesson_result = (
                     'К сожалению, в работе есть ошибки'
-                    if dvmn_response['new_attempts'][0]['is_negative']
+                    if lesson_checker['is_negative']
                     else 'Преподаватель принял задачу'
                 )
                 bot.send_message(
