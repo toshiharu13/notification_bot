@@ -4,6 +4,7 @@ import textwrap
 import requests
 import telegram
 from environs import Env
+from time import sleep
 
 
 def get_work_status(url, token, timestamp):
@@ -34,6 +35,10 @@ def main():
     bot = telegram.Bot(token=bot_token)
     user_name = bot.get_updates()[0]['message']['chat']['first_name']
     #print(bot.mess)
+    error_connect_count = 0
+    sleep_time = 90
+    errors_quantity = 5
+
     bot.send_message(text=f'Привет {user_name}!', chat_id=chat_id)
 
     while True:
@@ -62,6 +67,12 @@ def main():
 
         except requests.exceptions.ConnectionError as error:
             logging.error(f' Ошибка соединения - {error}')
+            error_connect_count += 1
+            if error_connect_count > errors_quantity:
+                logging.warning(
+                    'Достигнут максимум попыток соединений - таймаут')
+                sleep(sleep_time)
+                error_connect_count = 0
 
 
 if __name__ == "__main__":
