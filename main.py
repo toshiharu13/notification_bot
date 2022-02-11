@@ -33,12 +33,11 @@ def main():
     bot_token = env.str('TG_BOT_TOKEN')
     chat_id = env.str('TG_CHAT_ID')
     bot = telegram.Bot(token=bot_token)
-    user_name = bot.get_chat_member(chat_id, chat_id).user['first_name']
     error_connect_count = 0
     sleep_time = 90
     errors_quantity = 5
 
-    bot.send_message(text=f'Привет {user_name}!', chat_id=chat_id)
+    bot.send_message(text='Привет !', chat_id=chat_id)
 
     while True:
         try:
