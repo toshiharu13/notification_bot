@@ -43,15 +43,15 @@ def main():
         try:
             dvmn_response = get_work_status(
                 work_status_link, devman_token, timestamp)
-            lesson_checker = dvmn_response['new_attempts'][0]
+            last_attempt = dvmn_response['new_attempts'][0]
             if dvmn_response['status'] == 'timeout':
                 timestamp = dvmn_response['timestamp_to_request']
             if dvmn_response['status'] == 'found':
-                lesson = lesson_checker['lesson_title']
-                lesson_url = lesson_checker['lesson_url']
+                lesson = last_attempt['lesson_title']
+                lesson_url = last_attempt['lesson_url']
                 lesson_result = (
                     'К сожалению, в работе есть ошибки'
-                    if lesson_checker['is_negative']
+                    if last_attempt['is_negative']
                     else 'Преподаватель принял задачу'
                 )
                 bot_text = textwrap.dedent(f'''\
