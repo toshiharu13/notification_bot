@@ -21,8 +21,8 @@ def main():
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s; %(levelname)s; %(name)s; %(message)s',
-        filename='logs.lod',
-        filemode='w',
+        #filename='logs.lod',
+        #filemode='w',
     )
     env = Env()
     env.read_env()
@@ -36,9 +36,7 @@ def main():
     error_connect_count = 0
     sleep_time = 90
     errors_quantity = 5
-
     logging.info('Бот запущен')
-    bot.send_message(text='Привет !', chat_id=chat_id)
 
     while True:
         try:
@@ -72,6 +70,8 @@ def main():
                     'Достигнут максимум попыток соединений - таймаут')
                 sleep(sleep_time)
                 error_connect_count = 0
+        except Exception as error:
+            logging.exception(f"Бот упал с ошибкой: {error}")
 
 
 if __name__ == "__main__":
