@@ -27,7 +27,6 @@ def get_work_status(url, token, timestamp):
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     dvmn_response = response.json()
-    # logger.info(dvmn_response)
     return dvmn_response
 
 
