@@ -37,6 +37,7 @@ def main():
     sleep_time = 90
     errors_quantity = 5
 
+    logging.info('Бот запущен')
     bot.send_message(text='Привет !', chat_id=chat_id)
 
     while True:
