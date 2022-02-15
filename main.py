@@ -7,23 +7,34 @@ from environs import Env
 from time import sleep
 
 
+logger = logging.getLogger('Бот логер')
+
+
+class MyLogsHandler(logging.Handler):
+    def __init__(self, tg_bot, tg_chat_id):
+        super().__init__()
+        self.tg_bot = tg_bot
+        self.tg_chat_id = tg_chat_id
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.tg_bot.send_message(text=log_entry, chat_id=self.tg_chat_id)
+
+
 def get_work_status(url, token, timestamp):
     headers = {'Authorization': f'Token {token}'}
     params = {'timestamp': timestamp}
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
     dvmn_response = response.json()
-    logging.info(dvmn_response)
+    # logger.info(dvmn_response)
     return dvmn_response
 
 
 def main():
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format='%(asctime)s; %(levelname)s; %(name)s; %(message)s',
-        #filename='logs.lod',
-        #filemode='w',
-    )
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s')
+    logger.setLevel(logging.DEBUG)
+
     env = Env()
     env.read_env()
 
@@ -36,7 +47,8 @@ def main():
     error_connect_count = 0
     sleep_time = 90
     errors_quantity = 5
-    logging.info('Бот запущен')
+    logger.addHandler(MyLogsHandler(bot, chat_id))
+    logger.info('Бот запущен')
 
     while True:
         try:
@@ -61,18 +73,18 @@ def main():
                 bot.send_message(text=bot_text, chat_id=chat_id)
 
         except requests.exceptions.ReadTimeout as error:
-            logging.error(f' Ошибка таймаута - {error}')
+            logger.error(f' Ошибка таймаута - {error}')
 
         except requests.exceptions.ConnectionError as error:
-            logging.error(f' Ошибка соединения - {error}')
+            logger.error(f' Ошибка соединения - {error}')
             error_connect_count += 1
             if error_connect_count > errors_quantity:
-                logging.warning(
+                logger.warning(
                     'Достигнут максимум попыток соединений - таймаут')
                 sleep(sleep_time)
                 error_connect_count = 0
         except Exception as error:
-            logging.exception(f"Бот упал с ошибкой: {error}")
+            logger.exception(f"Бот упал с ошибкой: {error}")
 
 
 if __name__ == "__main__":
