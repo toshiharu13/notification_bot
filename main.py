@@ -58,7 +58,6 @@ def main():
                 timestamp = dvmn_response['timestamp_to_request']
 
             if dvmn_response['status'] == 'found':
-                print(dvmn_response['timestamp_to_request'])
                 last_attempt = dvmn_response['new_attempts'][0]
                 lesson = last_attempt['lesson_title']
                 lesson_url = last_attempt['lesson_url']
@@ -72,8 +71,8 @@ def main():
                 {lesson_result}. 
                 Ссылка - {lesson_url}''')
 
-                bot.send_message(text=bot_text, chat_id=chat_id)
-                sleep(sleep_time)
+                bot.send_message(text=bot_text, chat_id=chat_id)sleep(sleep_time)
+                timestamp = None
 
         except requests.exceptions.ReadTimeout as error:
             logger.error(f' Ошибка таймаута - {error}')
