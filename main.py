@@ -71,7 +71,7 @@ def main():
                 {lesson_result}. 
                 Ссылка - {lesson_url}''')
 
-                bot.send_message(text=bot_text, chat_id=chat_id)sleep(sleep_time)
+                bot.send_message(text=bot_text, chat_id=chat_id)
                 timestamp = None
 
         except requests.exceptions.ReadTimeout as error:
