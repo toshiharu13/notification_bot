@@ -47,7 +47,7 @@ def main():
     sleep_time = 90
     errors_quantity = 5
     logger.addHandler(MyLogsHandler(bot, chat_id))
-    logger.info('Бот запущен')
+    logger.info('review-bot запущен')
 
     while True:
         try:
@@ -56,6 +56,7 @@ def main():
 
             if dvmn_response['status'] == 'timeout':
                 timestamp = dvmn_response['timestamp_to_request']
+
             if dvmn_response['status'] == 'found':
                 last_attempt = dvmn_response['new_attempts'][0]
                 lesson = last_attempt['lesson_title']
@@ -67,8 +68,9 @@ def main():
                 )
                 bot_text = textwrap.dedent(f'''\
                 Преподаватель проверил работу - {lesson}
-                {lesson_result}. Ссылка - 
-                {lesson_url}''')
+                {lesson_result}. 
+                Ссылка - {lesson_url}''')
+
                 bot.send_message(text=bot_text, chat_id=chat_id)
 
         except requests.exceptions.ReadTimeout as error:
